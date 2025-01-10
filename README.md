@@ -25,3 +25,8 @@ My documentation for IMT Tech assessment for Full Stack Laravel Developer
 Now you can access the Vue application on http://localhost while Laravel backend on http://localhost/api.
 
 Further step would be to configure physical Nginx to point a domain to the exposed port and configure SSL.
+
+# NOTES
+1. `'errCode'` is using the same 1001 value due to documentation provided have been using it for all error response code.
+2. No logging on `catch (HttpResponseException)` as it is intentional to catch the validation error.
+3. Since all these exceptions will be handled the same way (same response, same logging), there is only 2 catch blocks. If not, there should be each catch block for QueryException, ModelNotFoundException, and PDOException.

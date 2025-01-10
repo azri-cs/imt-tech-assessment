@@ -6,9 +6,8 @@ use App\Constants\ResponseStatusCodeConstants;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Validation\Rules\Password;
 
-class UpdateUserRequest extends FormRequest
+class DeleteUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,10 +26,6 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'id' => 'required|int|exists:users,id',
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100',
-            'phone' => 'required|string|min:10',
-            'password' => ['string', Password::min(6)->numbers()],
         ];
     }
 
@@ -39,8 +34,8 @@ class UpdateUserRequest extends FormRequest
         throw new HttpResponseException(
             response()->json([
                 'response' => [
-                    'errCode' => ResponseStatusCodeConstants::USER_UPDATE_FAILED,
-                    'errMsg' => ResponseStatusCodeConstants::$messages[ResponseStatusCodeConstants::USER_UPDATE_FAILED],
+                    'errCode' => ResponseStatusCodeConstants::USER_DELETE_FAILED,
+                    'errMsg' => ResponseStatusCodeConstants::$messages[ResponseStatusCodeConstants::USER_DELETE_FAILED],
                 ]
             ], 422)
         );

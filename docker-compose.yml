@@ -1,0 +1,65 @@
+services:
+  backend:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: imt-backend
+    volumes:
+      - ./backend:/var/www/html
+    networks:
+      - imt-network
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: imt-frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "8080:80"
+    networks:
+      - imt-network
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+  nginx:
+    image: nginx:alpine
+    container_name: imt-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - imt-network
+    depends_on:
+      - backend
+      - frontend
+
+  db:
+    image: mysql:8.0
+    container_name: imt-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+    networks:
+      - imt-network
+
+networks:
+  imt-network:
+    driver: bridge
+
+volumes:
+  db_data:

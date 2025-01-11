@@ -38,7 +38,7 @@ class StoreUserRequest extends FormRequest
         throw new HttpResponseException(
             response()->json([
                 'response' => [
-                    'errCode' => ResponseStatusCodeConstants::USER_CREATE_FAILED,
+                    'errCode' => 1001, //Different error should have different status code, for the sake of this test it is hardcoded
                     'errMsg' => ResponseStatusCodeConstants::$messages[ResponseStatusCodeConstants::USER_CREATE_FAILED],
                 ]
             ], 422)

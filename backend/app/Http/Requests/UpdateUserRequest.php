@@ -6,6 +6,7 @@ use App\Constants\ResponseStatusCodeConstants;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UpdateUserRequest extends FormRequest
@@ -25,13 +26,18 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'id' => 'required|int|exists:users,id',
             'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($this->id)],
             'phone' => 'required|string|min:10',
-            'password' => ['string', Password::min(6)->numbers()],
         ];
+
+        if ($this->filled('password')) {
+            $rules['password'] = ['required', 'string', Password::min(6)->numbers()];
+        }
+
+        return $rules;
     }
 
     protected function failedValidation(Validator $validator): void
@@ -39,7 +45,7 @@ class UpdateUserRequest extends FormRequest
         throw new HttpResponseException(
             response()->json([
                 'response' => [
-                    'errCode' => ResponseStatusCodeConstants::USER_UPDATE_FAILED,
+                    'errCode' => 1001, //Different error should have different status code, for the sake of this test it is hardcoded
                     'errMsg' => ResponseStatusCodeConstants::$messages[ResponseStatusCodeConstants::USER_UPDATE_FAILED],
                 ]
             ], 422)

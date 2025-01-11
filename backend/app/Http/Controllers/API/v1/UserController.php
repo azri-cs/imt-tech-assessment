@@ -10,6 +10,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -67,7 +68,7 @@ class UserController extends Controller
             $user->update($validated);
 
             return ResponseHelpers::success();
-        } catch (HttpResponseException) {
+        } catch (HttpResponseException|ModelNotFoundException) {
             return ResponseHelpers::error(
                 ResponseStatusCodeConstants::USER_UPDATE_FAILED
             );
@@ -87,7 +88,7 @@ class UserController extends Controller
             $user->delete();
 
             return ResponseHelpers::success();
-        } catch (HttpResponseException) {
+        } catch (HttpResponseException|ModelNotFoundException) {
             return ResponseHelpers::error(
                 ResponseStatusCodeConstants::USER_DELETE_FAILED
             );

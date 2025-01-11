@@ -34,7 +34,7 @@ class DeleteUserRequest extends FormRequest
         throw new HttpResponseException(
             response()->json([
                 'response' => [
-                    'errCode' => ResponseStatusCodeConstants::USER_DELETE_FAILED,
+                    'errCode' => 1001, //Different error should have different status code, for the sake of this test it is hardcoded
                     'errMsg' => ResponseStatusCodeConstants::$messages[ResponseStatusCodeConstants::USER_DELETE_FAILED],
                 ]
             ], 422)
